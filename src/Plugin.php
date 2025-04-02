@@ -8,6 +8,10 @@
 
 namespace Daan\EDD\BetterCheckout;
 
+use Daan\Theme\LatestPosts;
+use function EDD\Blocks\Checkout\get_customer;
+use function EDD\Blocks\Checkout\get_customer_address;
+
 class Plugin {
 	/**
 	 * List of translateable texts that should be rewritten.
@@ -18,17 +22,14 @@ class Plugin {
 		'A pending order associated with this email address has been found. Please login to your account. If you don\'t have an account, please <a href="/wp-login.php?action=register">create an account</a> before proceeding.' => 'To complete this payment, please login to your account.',
 		'The EU VAT Validation service seems to be down. Please try again in a few hours or deduct the calculated VAT from your next VAT declaration using the invoice you\'ll receive upon purchase.'                            => 'We\'re having trouble checking your VAT number. Please try again or contact our support team.',
 		'The EU VAT Validation service seems to be overloaded at the moment. Please try again in a few seconds and keep trying. It\'ll work eventually.'                                                                          => 'We\'re having trouble checking your VAT number. The VIES service is unreachable.',
-		'City'                                                                                                                                                                                                                    => 'Billing city',
-		'Country'                                                                                                                                                                                                                 => 'Billing country',
 		'Enter a valid VAT number (starting with a 2 letter country code) to reverse charge EU VAT.'                                                                                                                              => 'Enter the VAT number of your company.',
 		'Name on Card'                                                                                                                                                                                                            => 'Name on the Card',
 		'Payment'                                                                                                                                                                                                                 => 'Select Payment Method',
 		''                                                                                                                                                                                                                        => 'Excluding %1$s&#37; tax',
-		'State/Province'                                                                                                                                                                                                          => 'Billing state/Province',
-		'Street + House No.'                                                                                                                                                                                                      => 'Billing address',
-		'Suite, Apt No., PO Box, etc.'                                                                                                                                                                                            => 'Billing address line 2 (optional)',
+		'Street + house no.'                                                                                                                                                                                                      => 'Address',
+		'Suite, apt no., PO box, etc.'                                                                                                                                                                                            => 'Address Line 2',
 		'Validate'                                                                                                                                                                                                                => 'Check',
-		'Zip/Postal Code'                                                                                                                                                                                                         => 'Billing zip/Postal code',
+		'Zip/Postal code'                                                                                                                                                                                                         => 'Billing zip/Postal code',
 	];
 
 	/**
@@ -57,7 +58,7 @@ class Plugin {
 		/**
 		 * Modify labels of checkout fields and error messages.
 		 */
-		add_filter( 'edd_checkout_personal_info_text', [ $this, 'return_your_details' ] );
+		add_action( 'daan_edd_purchase_form_top', [ $this, 'echo_your_details' ] );
 		add_filter( 'gettext_easy-digital-downloads', [ $this, 'modify_text_fields' ], 1, 3 );
 		add_filter( 'gettext_edd-eu-vat', [ $this, 'modify_text_fields' ], 1, 3 );
 		add_filter( 'gettext_edds', [ $this, 'modify_text_fields' ], 1, 3 );
@@ -70,6 +71,17 @@ class Plugin {
 		add_filter( 'edd_cart_item_tax_description', '__return_empty_string' );
 
 		/**
+		 * Modify EDD Checkout Block
+		 */
+		add_filter( 'register_block_type_args', [ $this, 'modify_checkout_render_callback' ], null, 2 );
+
+		/**
+		 * Re-arrange Country and ZIP field.
+		 */
+		remove_action( 'edd_cc_address_fields', 'EDD\Blocks\Checkout\do_address' );
+		add_action( 'edd_cc_address_fields', [ $this, 'do_address' ] );
+
+		/**
 		 * Discount related changes.
 		 */
 		add_filter( 'edd_fees_get_fees', [ $this, 'reword_negative_fee' ] );
@@ -79,7 +91,7 @@ class Plugin {
 		add_filter( 'edd_purchase_form_required_fields', [ $this, 'add_required_fields' ] );
 
 		// Force available gateways
-		// add_filter( 'edd_enabled_payment_gateways', [ $this, 'force_gateways' ], 10000, 1 );
+		add_filter( 'edd_enabled_payment_gateways', [ $this, 'force_gateways' ], 10000, 1 );
 
 		// Make sure VAT ID is in the correct format, i.e. contains a country code.
 		add_action( 'edds_buy_now_checkout_error_checks', [ $this, 'validate_vat_id_format' ], 10, 2 );
@@ -91,8 +103,15 @@ class Plugin {
 	 *
 	 * @return string|null
 	 */
-	public function return_your_details() {
-		return __( 'Your Details', $this->plugin_text_domain );
+	public function echo_your_details() {
+		?>
+        <div id="edd_purchase_form_title">
+            <h2>
+				<?php echo __( 'Your details', $this->plugin_text_domain ); ?>
+            </h2>
+            <p><?php echo __( 'VAT is recalculated after entering your details below.', $this->plugin_text_domain ); ?></p>
+        </div>
+		<?php
 	}
 
 	/**
@@ -110,6 +129,35 @@ class Plugin {
 		}
 
 		return $translation;
+	}
+
+	/**
+	 * Modify the Latest Posts block to use our own callback. @see LatestPosts::render()
+	 *
+	 * @param $settings
+	 * @param $name
+	 *
+	 * @return mixed
+	 */
+	public function modify_checkout_render_callback( $settings, $name ) {
+		if ( $name == 'edd/checkout' ) {
+			$settings[ 'render_callback' ] = [ new Blocks\Checkout(), 'render' ];
+		}
+
+		return $settings;
+	}
+
+	/**
+	 * Renders the customer address fields for checkout.
+	 *
+	 * @since 2.0
+	 * @return void
+	 */
+	public function do_address() {
+		$customer              = get_customer();
+		$customer[ 'address' ] = get_customer_address( $customer );
+
+		include EDD_BETTER_CHECKOUT_PLUGIN_DIR . 'views/checkout/purchase-form/address.php';
 	}
 
 	/**
@@ -202,7 +250,7 @@ class Plugin {
 	}
 
 	/**
-	 * Somewhere all payment methods are lost. This functions forces them back.
+	 * Somewhere one or more payment methods are lost. This functions forces them back.
 	 *
 	 * @param mixed $gateways
 	 *
