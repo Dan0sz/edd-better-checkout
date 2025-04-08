@@ -13,6 +13,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 define( 'EDD_BETTER_CHECKOUT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+define( 'EDD_BETTER_CHECKOUT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * Filter EDD output.
