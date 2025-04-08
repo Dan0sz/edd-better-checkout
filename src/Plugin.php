@@ -94,7 +94,7 @@ class Plugin {
 		add_filter( 'edd_purchase_form_required_fields', [ $this, 'add_required_fields' ] );
 
 		// Force available gateways
-		add_filter( 'edd_enabled_payment_gateways', [ $this, 'force_gateways' ], 10000, 1 );
+		add_filter( 'edd_mollie_payment_gateway_supports', [ $this, 'gateways_support_subscriptions' ], 11, 3 );
 
 		// Make sure VAT ID is in the correct format, i.e. contains a country code.
 		add_action( 'edds_buy_now_checkout_error_checks', [ $this, 'validate_vat_id_format' ], 10, 2 );
@@ -293,20 +293,20 @@ class Plugin {
 	}
 
 	/**
-	 * Somewhere one or more payment methods are lost. This functions forces them back.
+	 * Mollie Pro doesn't properly register its payment as supporting EDD Recurring, this hacky approach makes sure it does support it.
 	 *
-	 * @param mixed $gateways
+	 * @param bool   $supported Current value
+	 * @param string $gateway   Currently requested gateway type
+	 * @param \EDD_Recurring_Mollie_PayPal|\EDD_Recurring_Mollie_Abstract
 	 *
 	 * @return mixed
 	 */
-	public function force_gateways( $gateways ) {
-		if ( count( $gateways ) != count( $this->gateways ) && count( $this->gateways ) > 0 ) {
-			return $this->gateways;
+	public function gateways_support_subscriptions( $supported, $gateway, $class ) {
+		if ( ( $class->id === 'mollie_paypal' || $class->id = 'mollie_creditcard' ) && $gateway === 'subscriptions' ) {
+			return true;
 		}
 
-		$this->gateways = $gateways;
-
-		return $gateways;
+		return $supported;
 	}
 
 	/**
