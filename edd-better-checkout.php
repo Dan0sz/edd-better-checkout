@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Easy Digital Downloads - Better Checkout
  * Description: Increase the UX of EDD's checkout by changing a few things.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: Daan from Daan.dev
  * Author URI: https://daan.dev
  * GitHub Plugin URI: Dan0sz/non-required-state-field
