@@ -55,6 +55,9 @@ class Plugin {
 	 * @return void
 	 */
 	private function init() {
+		// Stylesheet
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+
 		/**
 		 * Modify labels of checkout fields and error messages.
 		 */
@@ -96,6 +99,46 @@ class Plugin {
 		// Make sure VAT ID is in the correct format, i.e. contains a country code.
 		add_action( 'edds_buy_now_checkout_error_checks', [ $this, 'validate_vat_id_format' ], 10, 2 );
 		add_action( 'edd_checkout_error_checks', [ $this, 'validate_vat_id_format' ], 10, 2 );
+	}
+
+	/**
+	 * Enqueue scripts and styles.
+	 *
+	 * @return void
+	 */
+	public function enqueue_scripts() {
+		if ( ! edd_is_checkout() ) {
+			return;
+		}
+
+		$suffix = $this->get_script_suffix();
+
+		wp_enqueue_script(
+			'daan-dev-better-checkout',
+			EDD_BETTER_CHECKOUT_PLUGIN_URL . "assets/js/better-checkout$suffix.js",
+			[
+				'jquery',
+				'edd-checkout-global',
+			],
+			filemtime( EDD_BETTER_CHECKOUT_PLUGIN_DIR . "assets/js/better-checkout$suffix.js" ),
+			true
+		);
+
+		wp_enqueue_style(
+			'daan-dev-better-checkout',
+			EDD_BETTER_CHECKOUT_PLUGIN_URL . "assets/css/better-checkout$suffix.css",
+			[],
+			filemtime( EDD_BETTER_CHECKOUT_PLUGIN_DIR . "assets/css/better-checkout$suffix.css" )
+		);
+	}
+
+	/**
+	 * Checks if debugging is enabled for local machines.
+	 *
+	 * @return string .min | ''
+	 */
+	public function get_script_suffix() {
+		return defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 	}
 
 	/**
