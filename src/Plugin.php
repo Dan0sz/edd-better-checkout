@@ -152,7 +152,6 @@ class Plugin {
             <h2>
 				<?php echo __( 'Your details', $this->plugin_text_domain ); ?>
             </h2>
-            <p><?php echo __( 'VAT is recalculated after entering your details below.', $this->plugin_text_domain ); ?></p>
         </div>
 		<?php
 	}
