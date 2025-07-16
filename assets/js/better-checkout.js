@@ -9,6 +9,7 @@ var edd_global_vars;
 jQuery(document).ready(function ($) {
     var ffwp_checkout = {
         init: function () {
+            $(document.body).on('edd_gateway_loaded', this.add_vat_id_tooltip);
             $(document.body).on('edd_taxes_recalculated', this.add_class);
 
             /**
@@ -18,6 +19,25 @@ jQuery(document).ready(function ($) {
             $(document).on('edd_eu_vat:before_vat_check', this.set_loader_cart);
             $('#billing_country').on('change', this.set_loader_cart);
             $('.edd-apply-discount').on('click', this.set_loader_cart);
+        },
+
+        add_vat_id_tooltip: function () {
+            let label = document.querySelector('#edd-card-vat-wrap .edd-label');
+
+            if (label === null) {
+                return;
+            }
+
+            let tooltip = document.createElement('span');
+            tooltip.className = 'daan-dev-tooltip';
+            tooltip.innerHTML = '?';
+
+            let tooltip_text = document.createElement('span');
+            tooltip_text.className = 'daan-dev-tooltip-text';
+            tooltip_text.innerHTML = 'If you want your business\' information to appear on your invoice, please enter a valid EU VAT ID here.';
+
+            tooltip.appendChild(tooltip_text);
+            label.appendChild(tooltip);
         },
 
         add_class: function () {

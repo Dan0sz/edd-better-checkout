@@ -4,6 +4,9 @@
  * @author Daan van den Bergh
  * @url https://daan.dev
  */
+/**
+ * Loader
+ */
 .daan-dev-loader.edd-loading {
     position: absolute;
     top: 50%;
@@ -67,4 +70,34 @@
         -webkit-transform: rotate(360deg);
         transform: rotate(360deg);
     }
+}
+
+/**
+ * EU VAT ID tooltip
+ */
+.daan-dev-tooltip {
+    position: relative;
+    background-color: #00adda;
+    color: #fff;
+    border-radius: 100%;
+    padding: 3px 6px;
+    font-size: .6rem;
+    vertical-align: top;
+}
+
+.daan-dev-tooltip .daan-dev-tooltip-text {
+    position: absolute;
+    visibility: hidden;
+    z-index: 1;
+    width: 256px;
+    padding: 1rem .5rem;
+    border-radius: .75rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-size: .8rem;
+    text-align: center;
+}
+
+.daan-dev-tooltip:hover .daan-dev-tooltip-text {
+    visibility: visible;
 }

@@ -78,7 +78,7 @@ class Plugin {
 		 */
 		remove_action( 'edd_cc_address_fields', 'EDD\Blocks\Checkout\do_address' );
 		add_action( 'edd_cc_address_fields', [ $this, 'do_address' ] );
-
+        
 		/**
 		 * Discount related changes.
 		 */
