@@ -38,11 +38,6 @@ class Plugin {
 	private $plugin_text_domain = 'edd-better-checkout';
 
 	/**
-	 * @var array $gateways
-	 */
-	private $gateways = [];
-
-	/**
 	 * Build class.
 	 */
 	public function __construct() {
