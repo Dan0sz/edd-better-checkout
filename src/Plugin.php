@@ -78,7 +78,7 @@ class Plugin {
 		 */
 		remove_action( 'edd_cc_address_fields', 'EDD\Blocks\Checkout\do_address' );
 		add_action( 'edd_cc_address_fields', [ $this, 'do_address' ] );
-        
+
 		/**
 		 * Discount related changes.
 		 */
@@ -327,7 +327,7 @@ class Plugin {
 		edd_set_error(
 			'invalid_vat_number',
 			__(
-				'The entered VAT ID isn\'t formatted correctly. Please add the country code at the beginning of the VAT ID, e.g. DE1234567890.',
+				'The entered VAT ID isn\'t formatted correctly. Please add the country code at the beginning of the VAT ID, e.g. DE1234567890. If you used auto-complete to fill in the form, reload the page and enter your details manually.',
 				$this->plugin_text_domain
 			)
 		);
