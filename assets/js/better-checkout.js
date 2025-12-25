@@ -41,15 +41,22 @@ jQuery(document).ready(function ($) {
         },
 
         add_class: function () {
-            var $result_data = $('#edd-vat-check-result').data('valid');
-            var $validate_button = $('#edd-vat-check-button');
+            let result = document.getElementById('edd-vat-check-result'),
+                validate_button = document.getElementById('edd-vat-check-button'),
+                result_data = null;
 
-            if ($result_data === 1) {
-                $validate_button.addClass('daan-dev-vat-valid');
-                $validate_button.val('Valid');
+            if (result !== null) {
+                result_data = result.dataset.valid;
+            }
+
+            if (result_data === '1') {
+                validate_button.classList.add('daan-dev-vat-valid');
+                validate_button.innerHTML = 'Valid';
+                validate_button.value = 'Valid';
             } else {
-                $validate_button.removeClass('daan-dev-vat-valid');
-                $validate_button.val('Validate');
+                validate_button.classList.remove('daan-dev-vat-valid');
+                validate_button.innerHTML = 'Validate';
+                validate_button.value = 'Validate';
             }
         },
 
