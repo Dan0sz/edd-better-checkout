@@ -3,6 +3,7 @@
 /.github
 /.vscode
 /node_modules
+/scripts
 /release
 
 .distignore

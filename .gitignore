@@ -11,7 +11,11 @@ test_error.log
 build/
 build/*
 
+node_modules/
 vendor/*
 !vendor/composer/
 !vendor/autoload.php
 config.php
+
+npm-debug.log*
+yarn-error.log*
