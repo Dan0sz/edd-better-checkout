@@ -62,6 +62,11 @@ class Plugin {
 		add_filter( 'gettext_edds', [ $this, 'modify_text_fields' ], 1, 3 );
 		add_filter( 'gettext_edd-recurring', [ $this, 'modify_text_fields' ], 1, 3 );
 
+        /**
+         * Remove VAT field label from Checkout page.
+         */
+        add_filter( 'edd_vat_checkout_vat_field_html', [ $this, 'remove_vat_field_label' ], 10, 3 );
+
 		/**
 		 * When Taxes > 'Display Tax Rate' is enabled in EDD's settings, remove the mention for each
 		 * shopping cart item, because it seems excessive.
@@ -167,6 +172,12 @@ class Plugin {
 
 		return $translation;
 	}
+
+    public function remove_vat_field_label( $html, $vat_details, $is_reverse_charged ) {
+        $html = preg_replace( '/<label[^>]*>\s*VAT\s+Number\s*<\/label>/', '', $html );
+
+        return $html;
+    }
 
 	/**
 	 * Modify the Latest Posts block to use our own callback. @see LatestPosts::render()
