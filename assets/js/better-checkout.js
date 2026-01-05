@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
         },
 
         add_vat_id_tooltip: function () {
-            let label = document.querySelector('#edd-card-vat-wrap .edd-label');
+            let label = document.querySelector('#edd-card-vat-wrap .edd-vat-checkbox-wrap label');
 
             if (label === null) {
                 return;
