@@ -9,7 +9,8 @@ var edd_global_vars;
 jQuery(document).ready(function ($) {
     var ffwp_checkout = {
         init: function () {
-            $(document.body).on('edd_gateway_loaded', this.add_vat_id_tooltip);
+            this.add_vat_id_tooltip();
+
             $(document.body).on('edd_taxes_recalculated', this.add_class);
 
             /**
