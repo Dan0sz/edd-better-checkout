@@ -94,7 +94,9 @@
                     focused = true;
                     username.closest( 'fieldset, form, div' ).scrollIntoView( { behavior: 'smooth', block: 'center' } );
                 }
-                if ( password && document.activeElement !== password && ! password.value ) {
+                // Only while nothing else has focus, so a customer who clicks the username to correct it keeps it.
+                const active = document.activeElement;
+                if ( password && ! password.value && ( ! active || active === document.body ) ) {
                     password.focus( { preventScroll: true } );
                 }
             }
