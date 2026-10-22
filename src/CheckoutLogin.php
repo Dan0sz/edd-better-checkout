@@ -71,7 +71,7 @@ class CheckoutLogin {
                 'daanCheckoutLogin',
                 [
                         /* translators: %s: "check out as a guest" link. */
-                        'message'   => __( "You're not logged in yet. Log in to your account above first, or %s.", 'edd-better-checkout' ),
+                        'message'   => __( "You're not logged in yet. Log in to your account first, or %s.", 'edd-better-checkout' ),
                         'linkLabel' => __( 'check out as a guest', 'edd-better-checkout' ),
                 ]
         );
