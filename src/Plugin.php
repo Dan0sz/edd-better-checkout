@@ -106,6 +106,9 @@ class Plugin {
         // Clearer notices around logging in at checkout.
         new EmailUsedNotice();
         new CheckoutLogin();
+
+        // The date of the first automatic renewal in EDD Recurring's notice for manual renewals.
+        new RenewalNotice();
     }
 
     /**
